@@ -58,7 +58,7 @@ export class ProjectService extends ServiceBase {
 
     private async getSensors(req, res) {
         try {
-            const [ results ] = await this._conn.query('SELECT * from blox.coordinates');
+            const [ results ] = await this._conn.query('SELECT * FROM coordinates');
             const data = results.map((r) => {
                 return {
                     id: r.sensorid,
@@ -81,7 +81,7 @@ export class ProjectService extends ServiceBase {
     private async getSensor(req, res) {
         try {
             const id = req.params.id;
-            const [ results ] = await this._conn.query(`SELECT * from blox.sensors WHERE sensorid = ${id} ORDER BY timestamp DESC LIMIT 100`);
+            const [ results ] = await this._conn.query(`SELECT * FROM sensors WHERE sensorid = ${id} ORDER BY timestamp DESC LIMIT 100`);
             const data = results.map((r) => {
                 return {
                     id: r.sensorid,
