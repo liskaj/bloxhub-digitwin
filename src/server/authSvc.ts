@@ -14,7 +14,7 @@ export class AuthService extends ServiceBase {
         if (!this._auth) {
             this._auth = new forge.AuthClientTwoLegged(this.options.clientID,
                 this.options.clientSecret,
-                [ 'code:all', 'data:read', 'data:write', 'viewables:read' ],
+                [ 'viewables:read' ],
                 true);
         }
         if (!this._auth.isAuthorized()) {
