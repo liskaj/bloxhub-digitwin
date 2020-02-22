@@ -12,6 +12,7 @@ export class AppController {
     private _lstProject: JQuery;
     private _lstRoom: JQuery;
     private _viewerContainer: JQuery;
+    private _sensorDataContainer: JQuery;
     private _viewer: Viewer;
     private _extension: BloxHubExtension;
 
@@ -33,6 +34,7 @@ export class AppController {
         this._btnSensors.on('click', () => {
             this.onSensorsClick();
         });
+        this._sensorDataContainer = $('#sensor-data-container');
         this._viewerContainer = $('#viewer-container');
         this._viewer = new Viewer(this._viewerContainer[0], this._authService);
         // populate projects
@@ -50,6 +52,9 @@ export class AppController {
     private get extension(): BloxHubExtension {
         if (!this._extension) {
             this._extension = this._viewer.getExtension(BloxHubExtension.NAME) as BloxHubExtension;
+            this._extension.addEventListener('SENSOR_SELECTED', (e) => {
+                this.onSensorSelected(e);
+            });
         }
         return this._extension;
     }
@@ -94,5 +99,30 @@ export class AppController {
             }
         });
         this.extension?.showSensors(sensors);
+    }
+
+    private async onSensorSelected(e): Promise<void> {
+        console.debug(`sensorSelected: ${e.id}`);
+        const data = await this._projectService.getSensor(e.id);
+
+        this._sensorDataContainer.empty();
+        const sensorRow = $(`
+            <div class='sensor-data-row'>
+                <span>Sensor</span>
+                <span>${e.id}</span>
+            </div>`);
+
+        this._sensorDataContainer.append(sensorRow);
+        if (!data.length) {
+            return;
+        }
+        const latestValues = data[data.length - 1];
+        const temperatureRow = $(`
+            <div class='sensor-data-row'>
+                <span>Temperature</span>
+                <span>${latestValues.data.temperature}</span>
+            </div>`);
+
+        this._sensorDataContainer.append(temperatureRow);
     }
 }
