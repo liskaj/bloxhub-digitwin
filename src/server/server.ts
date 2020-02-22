@@ -12,7 +12,8 @@ app.use('/', express.static(`${__dirname}/../../app`));
 
 const options = {
     clientID: process.env.FORGE_CLIENT_ID,
-    clientSecret: process.env.FORGE_CLIENT_SECRET
+    clientSecret: process.env.FORGE_CLIENT_SECRET,
+    projectID: process.env.FORGE_PROJECT_ID
 };
 
 // services
