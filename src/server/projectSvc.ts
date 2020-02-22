@@ -1,7 +1,10 @@
 import { ServiceBase } from './serviceBase';
 import { StatusCodes } from './statusCodes';
+import * as forge from 'forge-apis';
 
 export class ProjectService extends ServiceBase {
+    private _auth: forge.AuthClientTwoLegged;
+
     constructor(options) {
         super(options);
     }
@@ -9,6 +12,9 @@ export class ProjectService extends ServiceBase {
     protected initializeRoutes(): void {
         this.router.get('/projects', (req, res) => {
             this.getProjects(req, res);
+        });
+        this.router.get('/projects/:id', (req, res) => {
+            this.getProject(req, res);
         });
         this.router.get('/sensors', (req, res) => {
             this.getSensors(req, res);
@@ -26,6 +32,24 @@ export class ProjectService extends ServiceBase {
         }
     }
 
+    private async getProject(req, res) {
+        try {
+            const id = req.params.id;
+            const token = await this.getToken();
+            const url = `https://developer.api.autodesk.com/data/v1/projects/${this.options.projectID}/items/${id}`;
+            const data = await this.get(token.access_token, url);
+            const response = {
+                id: id,
+                urn: data.included[0].relationships.derivatives.data.id
+            };
+
+            res.status(StatusCodes.OK).json(response);
+        }
+        catch (err) {
+            res.status(StatusCodes.InternalServerError).json({ error: err });
+        }
+    }
+
     private async getSensors(req, res) {
         try {
             const data = await this.readData(`${__dirname}/data/sensor.json`);
@@ -35,5 +59,20 @@ export class ProjectService extends ServiceBase {
         catch (err) {
             res.status(StatusCodes.InternalServerError).json({ error: err });
         }
+    }
+
+    private async getToken() {
+        if (!this._auth) {
+            this._auth = new forge.AuthClientTwoLegged(this.options.clientID,
+                this.options.clientSecret,
+                [ 'data:read' ],
+                true);
+        }
+        if (!this._auth.isAuthorized()) {
+            await this._auth.authenticate();
+        }
+        const token = this._auth.getCredentials();
+
+        return token;
     }
 }

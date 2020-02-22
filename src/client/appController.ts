@@ -13,8 +13,6 @@ export class AppController {
     private _lstRoom: JQuery;
     private _viewerContainer: JQuery;
     private _viewer: Viewer;
-    private _projects: any[];
-    private _project: any;
     private _extension: BloxHubExtension;
 
     public async initialize(): Promise<void> {
@@ -38,11 +36,12 @@ export class AppController {
         this._viewerContainer = $('#viewer-container');
         this._viewer = new Viewer(this._viewerContainer[0], this._authService);
         // populate projects
-        this._projects = await this._projectService.getProjects();
-        this._projects.forEach((p) => {
+        const projects = await this._projectService.getProjects();
+
+        projects.forEach((p) => {
             this._lstProject.append(
                 $('<option/>')
-                    .val(p.name)
+                    .val(p.id)
                     .text(p.name)
             );
         });
@@ -56,14 +55,12 @@ export class AppController {
     }
 
     private async onLoadClick() {
-        const projectName = this._lstProject[0]['value'];
+        const projectID = this._lstProject[0]['value'];
+        const projectData = await this._projectService.getProject(projectID);
 
-        this._project = this._projects.find((p) => {
-            return p.name === projectName;
-        });
         // display model
         await this._viewer.initialize();
-        await this._viewer.load(`urn:${this._project.urn}`);
+        await this._viewer.load(`urn:${projectData.urn}`);
     }
 
     private async onRoomsClick() {
