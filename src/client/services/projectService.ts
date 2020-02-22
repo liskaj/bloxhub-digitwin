@@ -6,4 +6,10 @@ export class ProjectService extends ServiceClient {
 
         return this.get(url);
     }
+
+    public getSensors(): Promise<any> {
+        const url = `api/services/project/sensors`;
+
+        return this.get(url);
+    }
 }

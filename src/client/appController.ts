@@ -8,13 +8,14 @@ export class AppController {
     private _projectService: ProjectService;
     private _btnLoad: JQuery;
     private _btnRooms: JQuery;
+    private _btnSensors: JQuery;
     private _lstProject: JQuery;
     private _lstRoom: JQuery;
     private _viewerContainer: JQuery;
     private _viewer: Viewer;
     private _projects: any[];
     private _project: any;
-    private _ext: BloxHubExtension;
+    private _extension: BloxHubExtension;
 
     public async initialize(): Promise<void> {
         console.debug(`AppController#initialize`);
@@ -30,6 +31,10 @@ export class AppController {
         this._btnRooms.on('click', () => {
             this.onRoomsClick();
         });
+        this._btnSensors = $('#btn-sensors');
+        this._btnSensors.on('click', () => {
+            this.onSensorsClick();
+        });
         this._viewerContainer = $('#viewer-container');
         this._viewer = new Viewer(this._viewerContainer[0], this._authService);
         // populate projects
@@ -41,6 +46,13 @@ export class AppController {
                     .text(p.name)
             );
         });
+    }
+
+    private get extension(): BloxHubExtension {
+        if (!this._extension) {
+            this._extension = this._viewer.getExtension(BloxHubExtension.NAME) as BloxHubExtension;
+        }
+        return this._extension;
     }
 
     private async onLoadClick() {
@@ -55,10 +67,7 @@ export class AppController {
     }
 
     private async onRoomsClick() {
-        if (!this._ext) {
-            this._ext = this._viewer.getExtension(BloxHubExtension.NAME) as BloxHubExtension;
-        }
-        const rooms = await this._ext?.getRooms();
+        const rooms = await this.extension?.getRooms();
 
         rooms.forEach((r) => {
             this._lstRoom.append(
@@ -67,5 +76,26 @@ export class AppController {
                     .text(`${r.name} (${r.number})`)
             );
         });
+    }
+
+    private async onSensorsClick() {
+        const sensorData = await this._projectService.getSensors();
+        const roomData = await this.extension?.getRooms();
+        const sensors = [];
+
+        sensorData.forEach((s) => {
+            const room = roomData.find((r) => {
+                return r.number === s.room;
+            });
+
+            if (room) {
+                sensors.push({
+                    id: s.id,
+                    roomID: room.dbId,
+                    roomNumber: room.number
+                });
+            }
+        });
+        this.extension?.showSensors(sensors);
     }
 }
