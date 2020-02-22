@@ -15,6 +15,7 @@ main {
     display: flex;
     font-size: 14px;
     height: calc(100% - 80px);
+    justify-content: flex-start;
 }
 
 .header-logo {
@@ -29,6 +30,15 @@ main {
 .header-title {
     font-size: 34px;
     font-weight: bold;
+}
+
+.forge-logo {
+    background-image: url(../images/logo_forge-2-line.png);
+    background-size: 150px;
+    background-repeat: no-repeat;
+    height: 36px;
+    margin: 8px 8px 8px auto;
+    width: 150px;
 }
 
 button {
