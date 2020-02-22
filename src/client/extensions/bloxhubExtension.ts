@@ -1,5 +1,5 @@
 interface Sensor {
-    id: string;
+    id: number;
     roomID: number;
     roomNumber: string;
     location: THREE.Vector3;
@@ -10,9 +10,11 @@ export class BloxHubExtension extends Autodesk.Viewing.Extension {
 
     private _overlays: HTMLDivElement[] = [];
     private _sensors: Sensor[] = [];
+    private _dispatcher: Autodesk.Viewing.EventDispatcher;
 
     constructor(viewer: Autodesk.Viewing.GuiViewer3D, options?: any) {
         super(viewer, options);
+        this._dispatcher = new Autodesk.Viewing.EventDispatcher();
     }
 
     public load(): boolean {
@@ -26,6 +28,14 @@ export class BloxHubExtension extends Autodesk.Viewing.Extension {
     public unload(): boolean {
         console.debug(`bloxhub extension unloaded`);
         return true;
+    }
+
+    public addEventListener(type: string, listener: (event: any) => void, options?: any): void {
+        this._dispatcher.addEventListener(type, listener);
+    }
+
+    public removeEventListener(type: string, listener: (event: any) => void, options?: any): void {
+        this._dispatcher.removeEventListener(type, listener);
     }
 
     public getRooms(): Promise<any[]> {
@@ -74,7 +84,7 @@ export class BloxHubExtension extends Autodesk.Viewing.Extension {
         this.viewer.getObjectTree((instanceTree) => {
             sensors.forEach((sensor) => {
                 let overlay = this._overlays.find((o) => {
-                    const id = o.dataset['sensor'];
+                    const id = parseInt(o.dataset['sensor']);
 
                     return sensor.id === id;
                 });
@@ -109,7 +119,7 @@ export class BloxHubExtension extends Autodesk.Viewing.Extension {
         overlayDiv.className = 'sensor-overlay';
         overlayDiv.style.left = `${clientPos.x}px`;
         overlayDiv.style.top = `${clientPos.y}px`;
-        overlayDiv.dataset['sensor'] = sensor.id;
+        overlayDiv.dataset['sensor'] = sensor.id.toString();
         overlayDiv.dataset['room'] = sensor.roomID.toString();
         // add label
         const labelDiv = document.createElement('div');
@@ -138,7 +148,7 @@ export class BloxHubExtension extends Autodesk.Viewing.Extension {
 
     private updateOverlays(): void {
         this._overlays.forEach((overlay) => {
-            const id = overlay.dataset['sensor'];
+            const id = parseInt(overlay.dataset['sensor']);
             const sensor = this._sensors.find((item) => {
                 return item.id === id;
             });
@@ -157,9 +167,14 @@ export class BloxHubExtension extends Autodesk.Viewing.Extension {
 
     private onOverlayClick(event): void {
         const target = $(event.currentTarget);
-        const id = parseInt(target.data('room'));
+        const sensorId = target.data('sensor');
+        const roomId = parseInt(target.data('room'));
 
-        this.viewer.select(id);
+        this.viewer.select(roomId);
+        this._dispatcher.dispatchEvent({
+            type: 'SENSOR_SELECTED',
+            id: sensorId
+        });
     }
 }
 
