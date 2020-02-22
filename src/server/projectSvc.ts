@@ -22,6 +22,9 @@ export class ProjectService extends ServiceBase {
         this.router.get('/sensors', (req, res) => {
             this.getSensors(req, res);
         });
+        this.router.get('/sensors/:id', (req, res) => {
+            this.getSensor(req, res);
+        });
     }
 
     private async getProjects(req, res) {
@@ -74,6 +77,22 @@ export class ProjectService extends ServiceBase {
             res.status(StatusCodes.InternalServerError).json({ error: err });
         }
     }
+
+    private async getSensor(req, res) {
+        try {
+            const id = req.params.id;
+            const [ results ] = await this._conn.query(`SELECT * from blox.sensors WHERE sensorid = ${id} ORDER BY timestamp DESC LIMIT 100`);
+            const data = results.map((r) => {
+                return {
+                    id: r.sensorid,
+                    data: {
+                        humidity: r.humidity,
+                        light: r.light,
+                        sound: r.sound,
+                        temperature: r.temperature
+                    }
+                };
+            });
 
             res.status(StatusCodes.OK).json(data);
         }
