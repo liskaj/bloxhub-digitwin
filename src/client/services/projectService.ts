@@ -1,13 +1,24 @@
 import { ServiceClient } from './serviceClient';
 
+export interface Project {
+    name: string;
+    id: string;
+}
+
+export interface ProjectDetails {
+    name: string;
+    id: string;
+    urn: string;
+}
+
 export class ProjectService extends ServiceClient {
-    public getProject(projectID: string): Promise<any> {
+    public getProject(projectID: string): Promise<ProjectDetails> {
         const url = `api/services/project/projects/${projectID}`;
 
         return this.get(url);
     }
 
-    public getProjects(): Promise<any> {
+    public getProjects(): Promise<Project[]> {
         const url = `api/services/project/projects`;
 
         return this.get(url);
