@@ -74,28 +74,31 @@ button {
     width: calc(100% - 320px);
 }
 
-.level-list-container.hidden {
-    display: none;
-}
-
-.element-info-container.hidden {
-    display: none;
-}
-
-.list-title {
-    font-weight: bold;
-    margin: 0 0 4px 0;
-    text-align: center;
-}
-
-.item-row {
-    border-radius: 4px;
+.sensor-overlay {
+    background-color: rgba(144, 238, 144, 0.6);
+    border-color: green;
+    border-radius: 100%;
+    border-style: solid;
+    border-width: 2px;
     cursor: pointer;
-    display: flex;
-    margin: 4px;
-    padding: 4px;
+    display: inline-block;
+    position: absolute;
+    height: 20px;
+    width: 20px;
+    z-index: 1;
 }
 
-.item-row span {
-    width: 120px;
+.sensor-overlay:hover {
+    background-color: rgba(144, 238, 144, 1.0);
+    border-width: 3px;
+}
+
+.sensor-label {
+    background-color: rgba(34, 34, 34, 0.8);
+    border-radius: 4px;
+    display: inline-block;
+    font-size: 12px;
+    padding: 2px 4px;
+    transform: translate(25px, -5px);
+    z-index: 5;
 }
