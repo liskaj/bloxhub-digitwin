@@ -1,0 +1,101 @@
+html, body {
+    font-family: 'ArtifaktElement';
+    height: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+header {
+    align-items: center;
+    display: flex;
+    height: 80px;
+}
+
+main {
+    display: flex;
+    font-size: 14px;
+    height: calc(100% - 80px);
+}
+
+.header-logo {
+    background-image: url(../images/bloxhub-logo.png);
+    background-size: 200px;
+    background-repeat: no-repeat;
+    height: 67px;
+    margin: 8px;
+    width: 200px;
+}
+
+.header-title {
+    font-size: 34px;
+    font-weight: bold;
+}
+
+button {
+    background-color: #349ee0;
+    border-color: #349eea;
+    border-style: solid;
+    border-width: 2px;
+    border-radius: 6px;
+    color: #e8e8de;
+    cursor: pointer;
+    font-family: 'ArtifaktElement';
+    font-size: 14px;
+    font-weight: bold;
+    margin: 0 4px;
+    padding: 6px 16px;
+    width: 80px;
+}
+
+.left-container {
+    height: 100%;
+    width: 320px;
+}
+
+.left-container > div {
+    display: flex;
+    flex-direction: column;
+    padding: 4px;
+    width: calc(100% - 8px);
+}
+
+.left-container > div > label {
+    margin: 0 0 4px 0;
+}
+
+.left-container > div > select {
+    font-family: 'ArtifaktElement';
+    margin: 0 0 4px 0;
+}
+
+.viewer-container {
+    height: 100%;
+    position: relative;
+    width: calc(100% - 320px);
+}
+
+.level-list-container.hidden {
+    display: none;
+}
+
+.element-info-container.hidden {
+    display: none;
+}
+
+.list-title {
+    font-weight: bold;
+    margin: 0 0 4px 0;
+    text-align: center;
+}
+
+.item-row {
+    border-radius: 4px;
+    cursor: pointer;
+    display: flex;
+    margin: 4px;
+    padding: 4px;
+}
+
+.item-row span {
+    width: 120px;
+}

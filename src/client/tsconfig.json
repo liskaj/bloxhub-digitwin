@@ -1,0 +1,21 @@
+{
+    "compilerOptions": {
+        "baseUrl": ".",
+        "forceConsistentCasingInFileNames": true,
+        "module": "amd",
+        "moduleResolution": "node",
+        "noUnusedLocals": true,
+        "paths": {
+            "axios": [
+                "../../node_modules/axios"
+            ]
+        },
+        "skipLibCheck": true,
+        "sourceMap": true,
+        "target": "es6",
+        "typeRoots": [
+            "../../node_modules/@types",
+            "../../types"
+        ]
+    }
+}

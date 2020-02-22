@@ -1,0 +1,33 @@
+{
+    "name": "bloxhub-digitwin",
+    "version": "1.0.0",
+    "scripts": {
+        "build:client": "webpack --mode=production --config=webpack/webpack.config.js",
+        "build:server": "node node_modules/typescript/bin/tsc -p ./src/server",
+        "dev": "webpack-dev-server --mode=development --config=webpack/webpack.config.js",
+        "lint:client": "node node_modules/tslint/bin/tslint -c tslint.json -p ./src/client",
+        "lint:server": "node node_modules/tslint/bin/tslint -c tslint.json -p ./src/server",
+        "start": "node src/server/server.js"
+    },
+    "dependencies": {
+        "axios": "^0.19.2",
+        "express": "^4.17.1",
+        "forge-apis": "^0.7.2"
+    },
+    "devDependencies": {
+        "@types/jquery": "^3.3.31",
+        "@types/node": "^13.5.0",
+        "@types/three": "^0.103.2",
+        "clean-webpack-plugin": "^3.0.0",
+        "copy-webpack-plugin": "^5.1.1",
+        "fork-ts-checker-webpack-plugin": "^4.0.3",
+        "source-map-loader": "^0.2.4",
+        "ts-loader": "^6.2.1",
+        "tsconfig-paths-webpack-plugin": "^3.2.0",
+        "tslint": "^6.0.0",
+        "typescript": "^3.7.5",
+        "webpack": "^4.41.5",
+        "webpack-cli": "^3.3.10",
+        "webpack-dev-server": "^3.10.1"
+    }
+}

@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <title>BLOXHUB DigiTwin</title>
+    <link type="image/x-icon" rel="shortcut icon"  href="favicon.ico" />
+    <link type="text/css" rel="stylesheet" href="https://developer.api.autodesk.com/modelderivative/v2/viewers/7.*/style.css" />
+    <link type="text/css" rel="stylesheet" href="styles/site.css" />
+    <script type="text/javascript" src="//code.jquery.com/jquery-3.3.1.min.js"></script>
+    <script type="text/javascript" src="//unpkg.com/axios@0.18.0/dist/axios.min.js"></script>
+    <script type="text/javascript" src="https://developer.api.autodesk.com/modelderivative/v2/viewers/7.*/viewer3D.js"></script>
+</head>
+<body>
+    <header>
+        <div class="header-logo"></div>
+        <div class="header-title">DigiTwin</div>
+    </header>
+    <main>
+        <div class="left-container">
+            <div>
+                <label for="project-list">Project</label>
+                <select id="project-list"></select>
+            </div>
+            <div>
+                <button id="btn-load">Load</button>
+            </div>
+            <div>
+                <button id="btn-rooms">Rooms</button>
+            </div>
+            <div>
+                <label for="room-list">Room</label>
+                <select id="room-list"></select>
+            </div>
+        </div>
+        <div id="viewer-container" class="viewer-container"></div>
+    </main>
+    <script type="text/javascript" src="scripts/app.js"></script>
+</body>
