@@ -5,10 +5,12 @@
     <title>BLOXHUB DigiTwin</title>
     <link type="image/x-icon" rel="shortcut icon"  href="favicon.ico" />
     <link type="text/css" rel="stylesheet" href="https://developer.api.autodesk.com/modelderivative/v2/viewers/7.*/style.css" />
+    <link type="text/css" rel="stylesheet" href="//unpkg.com/vis-timeline@latest/styles/vis-timeline-graph2d.min.css" />
     <link type="text/css" rel="stylesheet" href="styles/site.css" />
     <script type="text/javascript" src="//code.jquery.com/jquery-3.3.1.min.js"></script>
     <script type="text/javascript" src="//unpkg.com/axios@0.18.0/dist/axios.min.js"></script>
     <script type="text/javascript" src="https://developer.api.autodesk.com/modelderivative/v2/viewers/7.*/viewer3D.js"></script>
+    <script type="text/javascript" src="//unpkg.com/vis-timeline@latest/standalone/umd/vis-timeline-graph2d.min.js"></script>
 </head>
 <body>
     <header>
@@ -35,7 +37,8 @@
             <div>
                 <button id="btn-sensors">Sensors</button>
             </div>
-            <div id="sensor-data-container"></div>
+            <div id="sensor-data-container" class="data-container"></div>
+            <div id="sensor-chart-container" class="chart-container"></div>
         </div>
         <div id="viewer-container" class="viewer-container"></div>
     </main>

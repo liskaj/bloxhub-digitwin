@@ -3,6 +3,8 @@ import { ProjectService } from './services/projectService';
 import { Viewer } from 'viewer';
 import { BloxHubExtension } from 'extensions/bloxhubExtension';
 
+import * as vis from 'vis-timeline';
+
 export class AppController {
     private _authService: AuthService;
     private _projectService: ProjectService;
@@ -13,8 +15,10 @@ export class AppController {
     private _lstRoom: JQuery;
     private _viewerContainer: JQuery;
     private _sensorDataContainer: JQuery;
+    private _sensorChartContainer: JQuery;
     private _viewer: Viewer;
     private _extension: BloxHubExtension;
+    private _chart: any;
 
     public async initialize(): Promise<void> {
         console.debug(`AppController#initialize`);
@@ -35,6 +39,7 @@ export class AppController {
             this.onSensorsClick();
         });
         this._sensorDataContainer = $('#sensor-data-container');
+        this._sensorChartContainer = $('#sensor-chart-container');
         this._viewerContainer = $('#viewer-container');
         this._viewer = new Viewer(this._viewerContainer[0], this._authService);
         // populate projects
@@ -113,16 +118,48 @@ export class AppController {
             </div>`);
 
         this._sensorDataContainer.append(sensorRow);
-        if (!data.length) {
-            return;
-        }
-        const latestValues = data[data.length - 1];
-        const temperatureRow = $(`
-            <div class='sensor-data-row'>
-                <span>Temperature</span>
-                <span>${latestValues.data.temperature}</span>
-            </div>`);
+        if (data.length) {
+            const latestValues = data[data.length - 1];
+            const temperatureRow = $(`
+                <div class='sensor-data-row'>
+                    <span>Temperature</span>
+                    <span>${latestValues.data.temperature}</span>
+                </div>`);
 
-        this._sensorDataContainer.append(temperatureRow);
+            this._sensorDataContainer.append(temperatureRow);
+        }
+        // populate chart
+        const chartValues = data.map((i) => {
+            return i.data.temperature;
+        });
+        const items = [];
+
+        chartValues.forEach((v, index) => {
+            items.push({
+                x: index,
+                y: v
+            });
+        });
+        const chartData = new vis.DataSet(items);
+
+        if (!this._chart) {
+            const options = {
+                clickToUse: false,
+                dataAxis: {
+                    showMinorLabels: false
+                },
+                start: 0,
+                end: chartValues.length - 1,
+                height: '200px',
+                width: '300px',
+                showMajorLabels: false,
+                showMinorLabels: false,
+                zoomable: false
+            };
+
+            this._chart = new vis.Graph2d(this._sensorChartContainer[0], chartData, options);
+        } else {
+            this._chart.setItems(chartData);
+        }
     }
 }
