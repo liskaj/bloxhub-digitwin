@@ -122,6 +122,10 @@ button {
     width: 312px !important;
 }
 
+.data-container > .sensor-data-row:first-child > span:first-child {
+    font-weight: bold;
+}
+
 .vis-graph-group0, .vis-graph-group1, .vis-graph-group2, .vis-graph-group3, .vis-graph-group4, .vis-graph-group5, .vis-graph-group6, .vis-graph-group7, .vis-graph-group8, .vis-graph-group9 {
     fill: #00f201;
     fill-opacity:0;
