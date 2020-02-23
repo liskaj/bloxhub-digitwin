@@ -112,3 +112,12 @@ button {
     transform: translate(25px, -5px);
     z-index: 5;
 }
+
+.data-container {
+    width: 312px !important;
+}
+
+.chart-container {
+    height: 200px;
+    width: 312px !important;
+}

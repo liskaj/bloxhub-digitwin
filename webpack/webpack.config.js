@@ -11,7 +11,8 @@ const config = {
     },
     externals: {
         axios: 'axios',
-        three: 'THREE'
+        three: 'THREE',
+        vis: 'vis'
     },
     devServer: {
         contentBase: `${OUTPUT_FOLDER}`,
