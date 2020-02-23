@@ -19,6 +19,7 @@ export class AppController {
     private _viewer: Viewer;
     private _extension: BloxHubExtension;
     private _chart: any;
+    private _sensorID: number;
 
     public async initialize(): Promise<void> {
         console.debug(`AppController#initialize`);
@@ -52,6 +53,7 @@ export class AppController {
                     .text(p.name)
             );
         });
+        this.pollSensorData();
     }
 
     private get extension(): BloxHubExtension {
@@ -108,18 +110,34 @@ export class AppController {
 
     private async onSensorSelected(e): Promise<void> {
         console.debug(`sensorSelected: ${e.id}`);
-        const data = await this._projectService.getSensor(e.id);
+        this.refreshSensorData(e.id);
+    }
 
+    private pollSensorData(): void {
+        setTimeout(() => {
+            this.refreshSensorData(this._sensorID);
+            this.pollSensorData();
+        }, 5000);
+    }
+
+    private async refreshSensorData(sensorID: number): Promise<void> {
+        let data;
+
+        if (sensorID) {
+            data = await this._projectService.getSensor(sensorID);
+        }
         this._sensorDataContainer.empty();
-        const sensorRow = $(`
-            <div class='sensor-data-row'>
-                <span>Sensor</span>
-                <span>${e.id}</span>
-            </div>`);
+        if (sensorID) {
+            const sensorRow = $(`
+                <div class='sensor-data-row'>
+                    <span>Sensor</span>
+                    <span>${sensorID}</span>
+                </div>`);
 
-        this._sensorDataContainer.append(sensorRow);
-        if (data.length) {
-            const latestValues = data[data.length - 1];
+            this._sensorDataContainer.append(sensorRow);
+        }
+        if (data && data.length) {
+            const latestValues = data[0];
             const temperatureRow = $(`
                 <div class='sensor-data-row'>
                     <span>Temperature</span>
@@ -129,25 +147,62 @@ export class AppController {
             this._sensorDataContainer.append(temperatureRow);
         }
         // populate chart
-        const chartValues = data.map((i) => {
-            return i.data.temperature;
+        const chartGroups = new vis.DataSet();
+
+        chartGroups.add({
+            id: 0,
+            content: 'Humidity',
+            className: 'vis-graph-group0',
+            style: 'vis-graph-group0'
         });
+        chartGroups.add({
+            id: 1,
+            content: 'Light',
+            className: 'vis-graph-group0',
+            style: 'vis-graph-group0'
+        });
+        chartGroups.add({
+            id: 2,
+            content: 'Temperature',
+            className: 'vis-graph-group0',
+            style: 'vis-graph-group0'
+        });
+        const chartValues = data?.map((i) => {
+            return {
+                humidity: i.data.humidity,
+                light: i.data.light,
+                temperature: i.data.temperature
+            };
+        }).reverse();
         const items = [];
 
-        chartValues.forEach((v, index) => {
+        chartValues?.forEach((v, index) => {
             items.push({
                 x: index,
-                y: v
+                y: v.humidity,
+                group: 0
+            });
+            items.push({
+                x: index,
+                y: v.light * 0.1,
+                group: 1
+            });
+            items.push({
+                x: index,
+                y: v.temperature,
+                group: 2
             });
         });
         const chartData = new vis.DataSet(items);
 
-        if (!this._chart) {
+        if (!this._chart && chartValues) {
             const options = {
                 clickToUse: false,
                 dataAxis: {
                     showMinorLabels: false
                 },
+                drawPoints: false,
+                legend: false,
                 start: 0,
                 end: chartValues.length - 1,
                 height: '200px',
@@ -157,9 +212,11 @@ export class AppController {
                 zoomable: false
             };
 
-            this._chart = new vis.Graph2d(this._sensorChartContainer[0], chartData, options);
+            this._chart = new vis.Graph2d(this._sensorChartContainer[0], chartData, chartGroups, options);
         } else {
-            this._chart.setItems(chartData);
+            this._chart?.setGroups(chartGroups);
+            this._chart?.setItems(chartData);
         }
+        this._sensorID = sensorID;
     }
 }

@@ -14,6 +14,8 @@ export interface ProjectDetails {
 export interface SensorDetails {
     id: number;
     data: {
+        humidity: number;
+        light: number;
         temperature: number;
     };
 }
