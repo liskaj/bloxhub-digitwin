@@ -55,7 +55,7 @@ export class BloxHubExtension extends Autodesk.Viewing.Extension {
                     let isRoom: boolean = false;
 
                     propResult.properties.forEach((p) => {
-                        if ((p.displayName === 'Category') && (p.displayValue === 'Revit Rooms')) {
+                        if ((p.displayName === 'Category') && ((p.displayValue === 'Revit Rooms') || (p.displayValue === 'Revit Generic Models'))) {
                             isRoom = true;
                         }
                         if (p.displayCategory === 'Identity Data') {
