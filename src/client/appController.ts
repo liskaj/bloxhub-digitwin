@@ -20,6 +20,7 @@ export class AppController {
     private _extension: BloxHubExtension;
     private _chart: any;
     private _sensorID: number;
+    private _sensorNames: { [key: number]: string } = {};
 
     public async initialize(): Promise<void> {
         console.debug(`AppController#initialize`);
@@ -104,6 +105,8 @@ export class AppController {
                     roomNumber: room.number
                 });
             }
+            // remmeber name
+            this._sensorNames[s.id] = room.number;
         });
         this.extension?.showSensors(sensors);
     }
@@ -128,23 +131,45 @@ export class AppController {
         }
         this._sensorDataContainer.empty();
         if (sensorID) {
+            const roomName = this._sensorNames[sensorID];
             const sensorRow = $(`
                 <div class='sensor-data-row'>
-                    <span>Sensor</span>
-                    <span>${sensorID}</span>
+                    <span>${roomName}</span>
+                    <span>(Sensor #${sensorID})</span>
                 </div>`);
 
             this._sensorDataContainer.append(sensorRow);
         }
         if (data && data.length) {
             const latestValues = data[0];
-            const temperatureRow = $(`
-                <div class='sensor-data-row'>
-                    <span>Temperature</span>
-                    <span>${latestValues.data.temperature}</span>
-                </div>`);
 
-            this._sensorDataContainer.append(temperatureRow);
+            if (latestValues.data.humidity) {
+                const humidityRow = $(`
+                    <div class='sensor-data-row'>
+                        <span>Humidity</span>
+                        <span>${latestValues.data.humidity}</span>
+                    </div>`);
+
+                this._sensorDataContainer.append(humidityRow);
+            }
+            if (latestValues.data.light) {
+                const lightRow = $(`
+                    <div class='sensor-data-row'>
+                        <span>Light</span>
+                        <span>${latestValues.data.light}</span>
+                    </div>`);
+
+                this._sensorDataContainer.append(lightRow);
+            }
+            if (latestValues.data.temperature) {
+                const temperatureRow = $(`
+                    <div class='sensor-data-row'>
+                        <span>Temperature</span>
+                        <span>${latestValues.data.temperature}</span>
+                    </div>`);
+
+                this._sensorDataContainer.append(temperatureRow);
+            }
         }
         // populate chart
         const chartGroups = new vis.DataSet();
