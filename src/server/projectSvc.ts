@@ -74,7 +74,12 @@ export class ProjectService extends ServiceBase {
             res.status(StatusCodes.OK).json(data);
         }
         catch (err) {
-            res.status(StatusCodes.InternalServerError).json({ error: err });
+            let errMsg = err;
+
+            if (err.message) {
+                errMsg = err.message;
+            }
+            res.status(StatusCodes.InternalServerError).json({ error: errMsg });
         }
     }
 
@@ -98,7 +103,12 @@ export class ProjectService extends ServiceBase {
             res.status(StatusCodes.OK).json(data);
         }
         catch (err) {
-            res.status(StatusCodes.InternalServerError).json({ error: err });
+            let errMsg = err;
+
+            if (err.message) {
+                errMsg = err.message;
+            }
+            res.status(StatusCodes.InternalServerError).json({ error: errMsg });
         }
     }
 
