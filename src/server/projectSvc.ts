@@ -85,6 +85,7 @@ export class ProjectService extends ServiceBase {
             const data = results.map((r) => {
                 return {
                     id: r.sensorid,
+                    timestamp: r.timestamp,
                     data: {
                         humidity: r.humidity,
                         light: r.light,
