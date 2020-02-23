@@ -20,6 +20,7 @@ export class AppController {
     private _extension: BloxHubExtension;
     private _chart: any;
     private _sensorID: number;
+    private _timeStamp: string;
     private _sensorNames: { [key: number]: string } = {};
 
     public async initialize(): Promise<void> {
@@ -143,6 +144,10 @@ export class AppController {
         if (data && data.length) {
             const latestValues = data[0];
 
+            if ((sensorID === this._sensorID) && (latestValues.timestamp === this._timeStamp)) {
+                return;
+            }
+            this._timeStamp = latestValues.timestamp;
             if (latestValues.data.humidity) {
                 const humidityRow = $(`
                     <div class='sensor-data-row'>
@@ -172,26 +177,6 @@ export class AppController {
             }
         }
         // populate chart
-        const chartGroups = new vis.DataSet();
-
-        chartGroups.add({
-            id: 0,
-            content: 'Humidity',
-            className: 'vis-graph-group0',
-            style: 'vis-graph-group0'
-        });
-        chartGroups.add({
-            id: 1,
-            content: 'Light',
-            className: 'vis-graph-group0',
-            style: 'vis-graph-group0'
-        });
-        chartGroups.add({
-            id: 2,
-            content: 'Temperature',
-            className: 'vis-graph-group0',
-            style: 'vis-graph-group0'
-        });
         const chartValues = data?.map((i) => {
             return {
                 humidity: i.data.humidity,
@@ -221,17 +206,34 @@ export class AppController {
         const chartData = new vis.DataSet(items);
 
         if (!this._chart && chartValues) {
+            const chartGroups = new vis.DataSet();
+
+            chartGroups.add({
+                id: 0,
+                content: 'Humidity',
+                className: 'vis-graph-group0'
+            });
+            chartGroups.add({
+                id: 1,
+                content: 'Light',
+                className: 'vis-graph-group0'
+            });
+            chartGroups.add({
+                id: 2,
+                content: 'Temperature',
+                className: 'vis-graph-group0'
+            });
             const options = {
                 clickToUse: false,
                 dataAxis: {
-                    showMinorLabels: false
+                    visible: false
                 },
                 drawPoints: false,
                 legend: false,
                 start: 0,
                 end: chartValues.length - 1,
                 height: '200px',
-                width: '300px',
+                width: '312px',
                 showMajorLabels: false,
                 showMinorLabels: false,
                 zoomable: false
@@ -239,7 +241,6 @@ export class AppController {
 
             this._chart = new vis.Graph2d(this._sensorChartContainer[0], chartData, chartGroups, options);
         } else {
-            this._chart?.setGroups(chartGroups);
             this._chart?.setItems(chartData);
         }
         this._sensorID = sensorID;
